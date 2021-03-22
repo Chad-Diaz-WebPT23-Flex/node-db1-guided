@@ -1,27 +1,37 @@
+const db = require("../../data/db-config.js");
+
 module.exports = {
   get,
   getById,
   create,
   update,
   remove,
+};
+
+async function get() {
+  const sql = await db("post").toString();
+  console.log(sql);
+  const post = await db("posts");
+  return post;
 }
 
-function get() {
-  return Promise.resolve('get wired')
+async function getById(id) {
+  const [post] = await db("posts").where({ id });
+  return post;
 }
 
-function getById() {
-  return Promise.resolve('getById wired')
+async function create(data) {
+  const [postId] = await db("posts").insert(data);
+  const newPost = await getById(postId);
+  return newPost;
 }
 
-function create() {
-  return Promise.resolve('create wired')
+async function update(id, changes) {
+  const count = await db("posts").where({ id }).update(changes);
+  return count;
 }
 
-function update() {
-  return Promise.resolve('update wired')
-}
-
-function remove() {
-  return Promise.resolve('delete wired')
+async function remove(id) {
+  const resultCount = await db('posts').where({ id }).del();
+  return resultCount;
 }
